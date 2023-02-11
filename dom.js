@@ -1,73 +1,107 @@
-var sum = 0;
+//var sum = 0;
 
 window.addEventListener("DOMContentLoaded", () => {
-    axios.get("https://crudcrud.com/api/86b2c950d47b4036af544b3824fb5278/stockvalue")
-       .then((Response) => {
-          for(var i = 0; i < Response.data.length; i++){
-             showUserOnScreen(Response.data[i]);
+  var sum = 0;
+  axios
+    .get("https://crudcrud.com/api/b284a2f3cae3482f822088ce106cc7ca/stockvalue")
+    .then((Response) => {
+        //var sum = 0;
+        for (var i = 0; i < Response.data.length; i++) {
+            sum = sum + parseInt(Response.data[i].sellPrice);
           }
-        //   for(var i = 0; i < Response.data.length; i++){
-        //     sum = sum + parseInt(obj.sellPrice[i]);
-        //   }
-          console.log(Response);
-       })
-       .catch((error) => {
-         console.log(error);
-       })
-})
+          console.log(sum);
 
-function sellerAdminPage(event){
-    event.preventDefault();
+      for (var i = 0; i < Response.data.length; i++) {
+        showUserOnScreen(Response.data[i],sum);
+      }
+      console.log(Response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
 
-    const sellPrice = event.target.sellingPrice.value;
-    const nameOfProduct = event.target.productName.value;
+function sellerAdminPage(event) {
+  event.preventDefault();
 
-    const obj = {
-        sellPrice,
-        nameOfProduct
-    }
+  const sellPrice = event.target.sellingPrice.value;
+  const nameOfProduct = event.target.productName.value;
 
-   sum = sum + parseInt(obj.sellPrice);
+  const obj = {
+    sellPrice,
+    nameOfProduct,
+  };
 
-    axios.post("https://crudcrud.com/api/86b2c950d47b4036af544b3824fb5278/stockvalue", obj)
-         .then((Response) => {
-            showUserOnScreen(Response.data);
-            console.log(Response);
-         })
-         .catch((err) => {
-            document.body.innerHTML = document.body.innerHTML + `<h4>Something Went Wrong </h4>`;
-            console.log(err);
-         })
+  //sum = sum + parseInt(obj.sellPrice);
+
+  axios
+    .post("https://crudcrud.com/api/b284a2f3cae3482f822088ce106cc7ca/stockvalue",obj)
+    .then((Response) => {
+      showUserOnScreen(Response.data);
+      console.log(Response);
+    })
+    .catch((err) => {
+      document.body.innerHTML =
+        document.body.innerHTML + `<h4>Something Went Wrong </h4>`;
+      console.log(err);
+    });
+    location.reload();
 }
 
-function showUserOnScreen(obj){
-    const parentItem = document.getElementById("totalStockValue");
-    const childItem = document.createElement('li');
+function showUserOnScreen(obj,num) {
+  const parentItem = document.getElementById("listOfProduct");
+  //const parentItem = document.getElementById("totalStockValue");
+  const childItem = document.createElement("li");
 
-    const childItem1 = document.createElement('h2');
-    childItem1.textContent = 'Products';
+  // const childItem1 = document.createElement('h2');
+  // childItem1.textContent = 'Products';
 
-    const childItem2 = document.createElement('h5');
-    childItem2.textContent = 'Total Value Worth Of Product: Rs' + sum;
+  //const childItem2 = document.createElement('h5');
+//   const item = document.querySelectorAll("#sellingPrice");
+//   console.log(item);
+//   for (var i = 0; i < item.length; i++) {
+//     sum += parseInt(item[i].value);
+//   }
 
-    childItem.textContent = obj.sellPrice + ' - ' + obj.nameOfProduct;
-    
-    parentItem.appendChild(childItem1);
-    parentItem.appendChild(childItem);
-    parentItem.appendChild(childItem2);
+  //childItem2.textContent = 'Total Value Worth Of Product: Rs' + sum;
+  const parentItem1 = document.getElementById("total sum");
+  parentItem1.textContent = `Total Value Worth Of Product: Rs${num}`;
 
-    const deleteButton = document.createElement('input');
-    deleteButton.type = "button";
-    deleteButton.value = "Delete";
-    deleteButton.onclick = () => {
-        axios.delete(`https://crudcrud.com/api/86b2c950d47b4036af544b3824fb5278/stockvalue/${obj._id}`)
-        .then((response) => {
-            parentItem.removeChild(childItem);
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-    }
+  childItem.textContent = obj.sellPrice + " - " + obj.nameOfProduct;
 
-    childItem.appendChild(deleteButton);
+  // parentItem.appendChild(childItem1);
+  parentItem.appendChild(childItem);
+  // parentItem.appendChild(childItem2);
+
+  const deleteButton = document.createElement("input");
+  deleteButton.type = "button";
+  deleteButton.value = "Delete";
+  deleteButton.onclick = () => {
+    axios
+      .delete(
+        `https://crudcrud.com/api/b284a2f3cae3482f822088ce106cc7ca/stockvalue/${obj._id}`
+      )
+      .then((response) => {
+        parentItem.removeChild(childItem);
+        //parentItem.removeChild(childItem1);
+        //parentItem.removeChild(childItem2);
+        //sum -= parseInt(item[item.length-1].value);
+
+        // const item = document.querySelectorAll("#sellingPrice");
+        // console.log(item);
+        // for (var i = 0; i < item.length; i++) {
+        //   sum += parseInt(item[i].value);
+        // }
+        // parentItem1.textContent = "Total Value Worth Of Product: Rs" + sum;
+
+        location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+  };
+
+  childItem.appendChild(deleteButton);
+  //parentItem.appendChild(childItem2);
 }
